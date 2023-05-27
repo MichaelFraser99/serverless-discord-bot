@@ -1,0 +1,52 @@
+openapi: 3.0.0
+info:
+  title: Discord Bot - OpenAPI 3.0
+  description: Discord bot swagger
+  version: 0.0.1
+paths:
+  '/interaction':
+    post:
+      summary: Post an interaction
+      description: Post an interaction to the bot lambda
+      operationId: postInteraction
+      requestBody:
+        description: Interaction body
+        content:
+          application/json:
+            schema:
+              type: object
+        required: true
+      responses:
+        '200':
+          $ref: '#/components/responses/OK'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+      x-amazon-apigateway-integration:
+        uri: "arn:aws:apigateway:eu-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-2:029470972384:function:mf-test-discord-handler/invocations"
+        httpMethod: "POST"
+        timeoutInMillis: 5000
+        passthroughBehavior: "when_no_match"
+        type: "aws_proxy"
+
+components:
+  responses:
+    OK:
+      description: OK
+      headers:
+        Access-Control-Allow-Origin:
+          schema:
+            type: string
+    BadRequest:
+      description: Bad Request
+      headers:
+        Access-Control-Allow-Origin:
+          schema:
+            type: string
+    Unauthorized:
+      description: Unauthorized
+      headers:
+        Access-Control-Allow-Origin:
+          schema:
+            type: string
