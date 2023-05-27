@@ -3,3 +3,5 @@ A summary of the outstanding tasks for this project.
 
 - Terraform provider for the registration of the application commands
 - Infrastructure diagram for README for what gets deployed
+- Add support for extra response types
+- Add support for soundboards
