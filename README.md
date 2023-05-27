@@ -13,6 +13,14 @@ This is a basic template for getting started with a Discord bot. The library is 
 4. Configure your bot (see below)
 5. Run `make build` to build the binary
 6. Deploy the binary to AWS lambda (see deployment section below)
+7. Register your bot with discord (see below)
+
+## Interactions Endpoint
+This bot leverages the Interaction Endpoint feature of discord bots
+
+https://discord.com/developers/docs/getting-started#adding-interaction-endpoint-url
+
+The endpoint for this bot is your API Gateway endpoint + `/interactions`. For example, if your API Gateway endpoint is `https://example.com` then your interactions endpoint is `https://example.com/interactions`
 
 ## Configuring the bot
 This project contains a basic configuration struct which is passed into the handler during the lambda init phase. This struct contains the following fields:
