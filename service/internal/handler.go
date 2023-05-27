@@ -17,7 +17,7 @@ func NewHandler(passedConfig BotConfig) func(ctx context.Context, event events.A
 		ctx = log.Logger.WithContext(ctx)
 		strEvent, err := json.Marshal(event)
 		if err != nil {
-			return internalServerError(ctx, err, "Failed to parse event as json")
+			return InternalServerError(ctx, err, "Failed to parse event as json")
 		}
 
 		log.Ctx(ctx).Info().Str("event", string(strEvent)).Msg("Processing request")
@@ -27,7 +27,7 @@ func NewHandler(passedConfig BotConfig) func(ctx context.Context, event events.A
 		interaction := Interaction{}
 		err = json.Unmarshal(bodyBytes, &interaction)
 		if err != nil {
-			return internalServerError(ctx, err, "Failed to parse request body as json")
+			return InternalServerError(ctx, err, "Failed to parse request body as json")
 		}
 
 		validRequest := ValidateRequest(ctx, config.PublicKey, bodyBytes, event.Headers["x-signature-ed25519"], event.Headers["x-signature-timestamp"])
@@ -51,19 +51,19 @@ func NewHandler(passedConfig BotConfig) func(ctx context.Context, event events.A
 
 			applicationCommand := ApplicationCommand{}
 			if json.Unmarshal([]byte(interaction.Data), &applicationCommand) != nil {
-				return internalServerError(ctx, err, "Failed to parse application command interaction to model")
+				return InternalServerError(ctx, err, "Failed to parse application command interaction to model")
 			}
 
 			interactionResponse, err := interactionApplicationCommand(ctx, applicationCommand)
 			if err != nil {
-				return internalServerError(ctx, err, "Failed to process application command interaction")
+				return InternalServerError(ctx, err, "Failed to process application command interaction")
 			}
 			jsonBytes, err = json.Marshal(interactionResponse)
 			break
 		}
 
 		if err != nil {
-			return internalServerError(ctx, err, "Failed to marshal response object as string")
+			return InternalServerError(ctx, err, "Failed to marshal response object as string")
 		}
 
 		log.Ctx(ctx).Info().Str("response", string(jsonBytes)).Msg("Sending response")
@@ -75,7 +75,7 @@ func NewHandler(passedConfig BotConfig) func(ctx context.Context, event events.A
 	}
 }
 
-func internalServerError(ctx context.Context, err error, cause string) (events.APIGatewayProxyResponse, error) {
+func InternalServerError(ctx context.Context, err error, cause string) (events.APIGatewayProxyResponse, error) {
 	log.Ctx(ctx).Error().Err(err).Msg(cause)
 	return events.APIGatewayProxyResponse{
 		StatusCode: 500,
