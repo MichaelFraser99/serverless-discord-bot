@@ -3,6 +3,7 @@ This is a basic template for getting started with a Discord bot. The library is 
 
 ## Requirements
 - go 1.20+
+- terraform 1.4.x+
 - an AWS account
 
 ## Getting Started
