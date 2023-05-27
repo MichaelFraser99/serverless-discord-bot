@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  title: Discord Bot - OpenAPI 3.0
+  title: ${name}
   description: Discord bot swagger
   version: 0.0.1
 paths:
@@ -24,7 +24,7 @@ paths:
         '401':
           $ref: '#/components/responses/Unauthorized'
       x-amazon-apigateway-integration:
-        uri: "arn:aws:apigateway:eu-west-2:lambda:path/2015-03-31/functions/arn:aws:lambda:eu-west-2:029470972384:function:mf-test-discord-handler/invocations"
+        uri: ${botLambdaInvocationArn}
         httpMethod: "POST"
         timeoutInMillis: 5000
         passthroughBehavior: "when_no_match"
