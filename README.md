@@ -6,11 +6,12 @@ This is a basic template for getting started with a Discord bot. The library is 
 - an AWS account
 
 ## Getting Started
-1. Clone the repo
-2. Run `go mod tidy` to download the dependencies
-3. Configure your bot (see below)
-4. Run `make build` to build the binary
-5. Deploy the binary to AWS lambda (see deployment section below)
+1. Clone the repo - I would recommend making your repository private to avoid accidentally committing any secrets for the world to see
+2. Run `git remote add upstream git@github.com:MichaelFraser99/serverless-discord-bot.git` to add the upstream remote and ensure you can pull in updates
+3. Run `go mod tidy` to download the dependencies
+4. Configure your bot (see below)
+5. Run `make build` to build the binary
+6. Deploy the binary to AWS lambda (see deployment section below)
 
 ## Configuring the bot
 This project contains a basic configuration struct which is passed into the handler during the lambda init phase. This struct contains the following fields:
