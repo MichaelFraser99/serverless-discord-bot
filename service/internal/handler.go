@@ -30,7 +30,13 @@ func NewHandler(passedConfig BotConfig) func(ctx context.Context, event events.A
 			return InternalServerError(ctx, err, "Failed to parse request body as json")
 		}
 
-		validRequest := ValidateRequest(ctx, config.PublicKey, bodyBytes, event.Headers["x-signature-ed25519"], event.Headers["x-signature-timestamp"])
+		validRequest, err := ValidateRequest(ctx, config.PublicKey, bodyBytes, event.Headers["x-signature-ed25519"], event.Headers["x-signature-timestamp"])
+		if err != nil {
+			return events.APIGatewayProxyResponse{
+				StatusCode: 401,
+			}, nil
+		}
+
 		if !validRequest {
 			log.Ctx(ctx).Error().Msg("Signature validation failed")
 			return events.APIGatewayProxyResponse{

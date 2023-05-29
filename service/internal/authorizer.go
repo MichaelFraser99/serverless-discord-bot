@@ -7,21 +7,21 @@ import (
 	"github.com/rs/zerolog/log"
 )
 
-func ValidateRequest(ctx context.Context, publicKey string, body []byte, signature string, timestamp string) bool {
+func ValidateRequest(ctx context.Context, publicKey string, body []byte, signature string, timestamp string) (bool, error) {
 	log.Ctx(ctx).Info().Msg("validating message signature")
 	hexDecodedPublicKey, err := hex.DecodeString(publicKey)
 	if err != nil {
 		log.Ctx(ctx).Error().Err(err).Msg("failed to hex decode public key")
-		return false
+		return false, err
 	}
 
 	hexDecodedSignature, err := hex.DecodeString(signature)
 	if err != nil {
 		log.Ctx(ctx).Error().Err(err).Msg("failed to hex decode signature")
-		return false
+		return false, err
 	}
 
 	message := append([]byte(timestamp), body...)
 	//validate Ed25519 signature
-	return ed25519.Verify(hexDecodedPublicKey, message, hexDecodedSignature)
+	return ed25519.Verify(hexDecodedPublicKey, message, hexDecodedSignature), nil
 }

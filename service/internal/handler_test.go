@@ -52,7 +52,7 @@ func TestHandler(t *testing.T) {
 			},
 		},
 		{
-			name:    "application command",
+			name:    "application command:poke",
 			message: `{"type":2,"data":{"id":"123456789","name":"poke","options":[{"name":"poke","value":"test"}]}}`,
 			validateHappyPathResponse: func(t *testing.T, response InteractionResponse) {
 				assert.Equal(t, 4, response.Type)
@@ -97,12 +97,12 @@ func TestHandler(t *testing.T) {
 					},
 				},
 				validate: func(t *testing.T, response events.APIGatewayProxyResponse, bodyValidation func(t *testing.T, response InteractionResponse), err error) {
-					require.Nil(t, err)
-					require.NotNil(t, response.Body)
-					require.Equal(t, 200, response.StatusCode)
+					assert.Nil(t, err)
+					assert.NotNil(t, response.Body)
+					assert.Equal(t, 200, response.StatusCode)
 
 					interactionResponse := InteractionResponse{}
-					require.Nil(t, json.Unmarshal([]byte(response.Body), &interactionResponse))
+					assert.Nil(t, json.Unmarshal([]byte(response.Body), &interactionResponse))
 
 					bodyValidation(t, interactionResponse)
 				},
@@ -117,7 +117,7 @@ func TestHandler(t *testing.T) {
 					},
 				},
 				validate: func(t *testing.T, response events.APIGatewayProxyResponse, bodyValidation func(t *testing.T, response InteractionResponse), err error) {
-					require.Nil(t, err)
+					assert.Nil(t, err)
 					assert.Empty(t, response.Body)
 					assert.Equal(t, 401, response.StatusCode)
 				},
@@ -132,9 +132,24 @@ func TestHandler(t *testing.T) {
 					},
 				},
 				validate: func(t *testing.T, response events.APIGatewayProxyResponse, bodyValidation func(t *testing.T, response InteractionResponse), err error) {
-					require.Nil(t, err)
+					assert.Nil(t, err)
 					assert.Empty(t, response.Body)
 					assert.Equal(t, 401, response.StatusCode)
+				},
+			},
+			{
+				name: "invalid body",
+				input: events.APIGatewayProxyRequest{
+					Body: "someutternonsense",
+					Headers: map[string]string{
+						HEADER_SIGNATURE: string(*hexSignature),
+						HEADER_TIMESTAMP: "12345",
+					},
+				},
+				validate: func(t *testing.T, response events.APIGatewayProxyResponse, bodyValidation func(t *testing.T, response InteractionResponse), err error) {
+					assert.Error(t, err)
+					assert.Empty(t, response.Body)
+					assert.Equal(t, 500, response.StatusCode)
 				},
 			},
 		}
