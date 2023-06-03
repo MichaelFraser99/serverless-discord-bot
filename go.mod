@@ -1,4 +1,4 @@
-module github.com/MichaelFraser99/discord-bot
+module github.com/MichaelFraser99/serverless-discord-bot
 
 go 1.20
 
