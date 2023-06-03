@@ -13,7 +13,7 @@ func TestInteractionApplicationCommand(t *testing.T) {
 	tests := []struct {
 		name     string
 		input    model.ApplicationCommand
-		validate func(t *testing.T, response model.InteractionResponse, err error)
+		validate func(t *testing.T, response *model.InteractionResponse, err error)
 	}{
 		{
 			name: "we can get an invalid command response when no command is registered",
@@ -22,7 +22,7 @@ func TestInteractionApplicationCommand(t *testing.T) {
 				Name: "poke",
 				Type: 2,
 			},
-			validate: func(t *testing.T, response model.InteractionResponse, err error) {
+			validate: func(t *testing.T, response *model.InteractionResponse, err error) {
 				require.NoError(t, err)
 				assert.Equal(t, 4, response.Type)
 				assert.Equal(t, "Unregistered command", response.Data.Content)
