@@ -2,6 +2,7 @@ package internal
 
 import (
 	"context"
+	"github.com/MichaelFraser99/serverless-discord-bot/model"
 	"github.com/stretchr/testify/assert"
 	"testing"
 
@@ -11,17 +12,17 @@ import (
 func TestInteractionApplicationCommand(t *testing.T) {
 	tests := []struct {
 		name     string
-		input    ApplicationCommand
-		validate func(t *testing.T, response InteractionResponse, err error)
+		input    model.ApplicationCommand
+		validate func(t *testing.T, response model.InteractionResponse, err error)
 	}{
 		{
 			name: "we can get an invalid command response when no command is registered",
-			input: ApplicationCommand{
+			input: model.ApplicationCommand{
 				ID:   "1234567890",
 				Name: "poke",
 				Type: 2,
 			},
-			validate: func(t *testing.T, response InteractionResponse, err error) {
+			validate: func(t *testing.T, response model.InteractionResponse, err error) {
 				require.NoError(t, err)
 				assert.Equal(t, 4, response.Type)
 				assert.Equal(t, "Unregistered command", response.Data.Content)

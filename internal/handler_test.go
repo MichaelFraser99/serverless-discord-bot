@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	"github.com/MichaelFraser99/serverless-discord-bot/model"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
@@ -42,19 +43,19 @@ func TestHandler(t *testing.T) {
 	interactionTests := []struct {
 		name                      string
 		message                   string
-		validateHappyPathResponse func(t *testing.T, response InteractionResponse)
+		validateHappyPathResponse func(t *testing.T, response model.InteractionResponse)
 	}{
 		{
 			name:    "ping",
 			message: `{"type":1}`,
-			validateHappyPathResponse: func(t *testing.T, response InteractionResponse) {
+			validateHappyPathResponse: func(t *testing.T, response model.InteractionResponse) {
 				assert.Equal(t, 1, response.Type)
 			},
 		},
 		{
 			name:    "application command:poke",
 			message: `{"type":2,"data":{"id":"123456789","name":"poke","options":[{"name":"poke","value":"test"}]}}`,
-			validateHappyPathResponse: func(t *testing.T, response InteractionResponse) {
+			validateHappyPathResponse: func(t *testing.T, response model.InteractionResponse) {
 				assert.Equal(t, 4, response.Type)
 				assert.Equal(t, "Hello, world!", response.Data.Content)
 				assert.False(t, response.Data.TTS)
@@ -67,13 +68,13 @@ func TestHandler(t *testing.T) {
 		hexSignature, hexPublicKey, timestamp, err := generateSignedArtifacts(interaction.message)
 		require.Nil(t, err, "failed to generate signed artifacts")
 
-		testConfig := BotConfig{
+		testConfig := model.BotConfig{
 			PublicKey: string(*hexPublicKey),
-			ApplicationCommandHandlers: map[string]func(ctx context.Context, applicationCommand ApplicationCommand) (InteractionResponse, error){
-				"poke": func(ctx context.Context, applicationCommand ApplicationCommand) (InteractionResponse, error) {
-					return InteractionResponse{
+			ApplicationCommandHandlers: map[string]func(ctx context.Context, applicationCommand model.ApplicationCommand) (model.InteractionResponse, error){
+				"poke": func(ctx context.Context, applicationCommand model.ApplicationCommand) (model.InteractionResponse, error) {
+					return model.InteractionResponse{
 						Type: 4,
-						Data: InteractionResponseData{
+						Data: model.InteractionResponseData{
 							Content: "Hello, world!",
 							TTS:     false,
 						},
@@ -85,7 +86,7 @@ func TestHandler(t *testing.T) {
 		tests := []struct {
 			name     string
 			input    events.APIGatewayProxyRequest
-			validate func(t *testing.T, response events.APIGatewayProxyResponse, bodyValidation func(t *testing.T, response InteractionResponse), err error)
+			validate func(t *testing.T, response events.APIGatewayProxyResponse, bodyValidation func(t *testing.T, response model.InteractionResponse), err error)
 		}{
 			{
 				name: "valid request",
@@ -96,12 +97,12 @@ func TestHandler(t *testing.T) {
 						HEADER_TIMESTAMP: *timestamp,
 					},
 				},
-				validate: func(t *testing.T, response events.APIGatewayProxyResponse, bodyValidation func(t *testing.T, response InteractionResponse), err error) {
+				validate: func(t *testing.T, response events.APIGatewayProxyResponse, bodyValidation func(t *testing.T, response model.InteractionResponse), err error) {
 					assert.Nil(t, err)
 					assert.NotNil(t, response.Body)
 					assert.Equal(t, 200, response.StatusCode)
 
-					interactionResponse := InteractionResponse{}
+					interactionResponse := model.InteractionResponse{}
 					assert.Nil(t, json.Unmarshal([]byte(response.Body), &interactionResponse))
 
 					bodyValidation(t, interactionResponse)
@@ -116,7 +117,7 @@ func TestHandler(t *testing.T) {
 						HEADER_TIMESTAMP: *timestamp,
 					},
 				},
-				validate: func(t *testing.T, response events.APIGatewayProxyResponse, bodyValidation func(t *testing.T, response InteractionResponse), err error) {
+				validate: func(t *testing.T, response events.APIGatewayProxyResponse, bodyValidation func(t *testing.T, response model.InteractionResponse), err error) {
 					assert.Nil(t, err)
 					assert.Empty(t, response.Body)
 					assert.Equal(t, 401, response.StatusCode)
@@ -131,7 +132,7 @@ func TestHandler(t *testing.T) {
 						HEADER_TIMESTAMP: "12345",
 					},
 				},
-				validate: func(t *testing.T, response events.APIGatewayProxyResponse, bodyValidation func(t *testing.T, response InteractionResponse), err error) {
+				validate: func(t *testing.T, response events.APIGatewayProxyResponse, bodyValidation func(t *testing.T, response model.InteractionResponse), err error) {
 					assert.Nil(t, err)
 					assert.Empty(t, response.Body)
 					assert.Equal(t, 401, response.StatusCode)
@@ -146,7 +147,7 @@ func TestHandler(t *testing.T) {
 						HEADER_TIMESTAMP: "12345",
 					},
 				},
-				validate: func(t *testing.T, response events.APIGatewayProxyResponse, bodyValidation func(t *testing.T, response InteractionResponse), err error) {
+				validate: func(t *testing.T, response events.APIGatewayProxyResponse, bodyValidation func(t *testing.T, response model.InteractionResponse), err error) {
 					assert.Error(t, err)
 					assert.Empty(t, response.Body)
 					assert.Equal(t, 500, response.StatusCode)

@@ -4,13 +4,14 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	"github.com/MichaelFraser99/serverless-discord-bot/model"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/rs/zerolog/log"
 )
 
-var config BotConfig
+var config model.BotConfig
 
-func NewHandler(passedConfig BotConfig) func(ctx context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func NewHandler(passedConfig model.BotConfig) func(ctx context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 	config = passedConfig
 
 	return func(ctx context.Context, event events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
@@ -24,7 +25,7 @@ func NewHandler(passedConfig BotConfig) func(ctx context.Context, event events.A
 
 		bodyBytes := bytes.NewBufferString(event.Body).Bytes()
 
-		interaction := Interaction{}
+		interaction := model.Interaction{}
 		err = json.Unmarshal(bodyBytes, &interaction)
 		if err != nil {
 			return InternalServerError(ctx, err, "Failed to parse request body as json")
@@ -55,7 +56,7 @@ func NewHandler(passedConfig BotConfig) func(ctx context.Context, event events.A
 		case 2:
 			log.Ctx(ctx).Info().Msg("Application command interaction received")
 
-			applicationCommand := ApplicationCommand{}
+			applicationCommand := model.ApplicationCommand{}
 			if json.Unmarshal([]byte(interaction.Data), &applicationCommand) != nil {
 				return InternalServerError(ctx, err, "Failed to parse application command interaction to model")
 			}
