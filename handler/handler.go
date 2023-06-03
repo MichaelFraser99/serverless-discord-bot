@@ -1,4 +1,4 @@
-package serverless_discord_bot
+package handler
 
 import (
 	"context"
