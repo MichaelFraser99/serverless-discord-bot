@@ -69,3 +69,7 @@ func main() {
 The above code snippet registers a command `poke` and provides a function which will be executed on command run.
 
 Therefor, when a user runs the command `/poke` the bot will respond with "Hello, world!".
+
+## Deploying the bot
+I'd recommend leveraging terraform to deploy the bot
+A supporting terraform provider for configuring discord application commands can be found here: https://registry.terraform.io/providers/MichaelFraser99/discord-application/latest
