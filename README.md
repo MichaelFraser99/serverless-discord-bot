@@ -1,5 +1,5 @@
 # Discord Bot
-This is a basic template for getting started with a Discord bot. The library is designed to be deployed within AWS lambda behind an API Gateway. Remember these services cost money and scale to a very high degree so take care when deploying.
+This module provides the internal to run a discord bot on AWS lambda. The bot is written in go and uses the discord interactions API to receive and respond to commands.
 
 ## Requirements
 - go 1.20+
@@ -7,13 +7,7 @@ This is a basic template for getting started with a Discord bot. The library is 
 - an AWS account
 
 ## Getting Started
-1. Clone the repo - I would recommend making your repository private to avoid accidentally committing any secrets for the world to see
-2. Run `git remote add upstream git@github.com:MichaelFraser99/serverless-discord-bot.git` to add the upstream remote and ensure you can pull in updates
-3. Run `go mod tidy` to download the dependencies
-4. Configure your bot (see below)
-5. Run `make build` to build the binary
-6. Deploy the binary to AWS lambda (see deployment section below)
-7. Register your bot with discord (see below)
+todo
 
 ## Interactions Endpoint
 This bot leverages the Interaction Endpoint feature of discord bots
@@ -32,44 +26,46 @@ type BotConfig struct {
 ```
 
 ## Adding custom commands
-Configuring your discord bot with your own commands is very simple. Inside main.go you will see an example of adding a command to a bot:
+Configuring your discord bot with your own commands is very simple. Below is an example 'main.go' file which registers a single command called 'poke'
 ```go
-config = internal.BotConfig{
-    PublicKey: publicKey,
-    ApplicationCommandHandlers: map[string]func(ctx context.Context, applicationCommand internal.ApplicationCommand) (internal.InteractionResponse, error){
-        "poke": func(ctx context.Context, applicationCommand internal.ApplicationCommand) (internal.InteractionResponse, error) {
-            return internal.InteractionResponse{
-                Type: 4,
-                Data: internal.InteractionResponseData{
-                    Content: "Hello, world!",
-                    TTS:     false,
-                },
-            }, nil
-        },
-    },
+package main
+
+import (
+	"context"
+	"github.com/MichaelFraser99/discord-bot/internal"
+	"github.com/aws/aws-lambda-go/lambda"
+	"github.com/rs/zerolog/log"
+	"os"
+)
+
+var config internal.BotConfig
+
+func main() {
+	publicKey, found := os.LookupEnv("PUBLIC_KEY")
+	if !found {
+		log.Ctx(context.Background()).Panic().Msg("unable to retrieve public key from environment")
+		return
+	}
+
+	config = internal.BotConfig{
+		PublicKey: publicKey,
+		ApplicationCommandHandlers: map[string]func(ctx context.Context, applicationCommand internal.ApplicationCommand) (internal.InteractionResponse, error){
+			"poke": func(ctx context.Context, applicationCommand internal.ApplicationCommand) (internal.InteractionResponse, error) {
+				return internal.InteractionResponse{
+					Type: 4,
+					Data: internal.InteractionResponseData{
+						Content: "Hello, world!",
+						TTS:     false,
+					},
+				}, nil
+			},
+		},
+	}
+
+	lambda.Start(internal.NewHandler(config))
 }
+
 ```
 The above code snippet registers a command `poke` and provides a function which will be executed on command run.
 
 Therefor, when a user runs the command `/poke` the bot will respond with "Hello, world!".
-
-## Deployment
-This project is designed to be deployed to AWS lambda. The top-level Makefile contains a target for building the binary and zipping it up ready for deployment. The following command will build the binary and zip it up ready for deployment:
-```bash
-make build
-```
-After building, you can deploy the binary to AWS lambda using the AWS CLI. First cd into the infrastructure directory and review the vars.tfvars file
-
-This file contains the following variables:
-```terraform
-name = "bot-name"
-public_key = "add-bot-public-key-here"
-```
-Configure the name and public key for your bot. The name is used to name the lambda function and the public key is used to verify the requests from discord. The public key for your bot can be found on your bots application page in the discord developer portal.
-
-When you're ready to deploy, run the following commands
-```bash
-make init #initialises terraform
-make plan #runs a terraform plan
-make apply #applies the terraform plan
-```
