@@ -20,7 +20,7 @@ func (m MentionType) String() string {
 
 type BotConfig struct {
 	PublicKey                  string
-	ApplicationCommandHandlers map[string]func(ctx context.Context, applicationCommand ApplicationCommand) (InteractionResponse, error)
+	ApplicationCommandHandlers map[string]func(ctx context.Context, applicationCommand ApplicationCommand) (*InteractionResponse, error)
 }
 
 type InteractionResponse struct {

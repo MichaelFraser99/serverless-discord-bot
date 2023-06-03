@@ -70,9 +70,9 @@ func TestHandler(t *testing.T) {
 
 		testConfig := model.BotConfig{
 			PublicKey: string(*hexPublicKey),
-			ApplicationCommandHandlers: map[string]func(ctx context.Context, applicationCommand model.ApplicationCommand) (model.InteractionResponse, error){
-				"poke": func(ctx context.Context, applicationCommand model.ApplicationCommand) (model.InteractionResponse, error) {
-					return model.InteractionResponse{
+			ApplicationCommandHandlers: map[string]func(ctx context.Context, applicationCommand model.ApplicationCommand) (*model.InteractionResponse, error){
+				"poke": func(ctx context.Context, applicationCommand model.ApplicationCommand) (*model.InteractionResponse, error) {
+					return &model.InteractionResponse{
 						Type: 4,
 						Data: model.InteractionResponseData{
 							Content: "Hello, world!",
