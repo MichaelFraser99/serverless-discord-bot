@@ -2,10 +2,11 @@ package internal
 
 import (
 	"context"
+	"github.com/MichaelFraser99/serverless-discord-bot/model"
 	"github.com/rs/zerolog/log"
 )
 
-func interactionApplicationCommand(ctx context.Context, data ApplicationCommand) (InteractionResponse, error) {
+func interactionApplicationCommand(ctx context.Context, data model.ApplicationCommand) (model.InteractionResponse, error) {
 	log.Ctx(ctx).Info().Interface("message", data).Msg("Processing application command")
 
 	for command, commandHandler := range config.ApplicationCommandHandlers {
@@ -14,9 +15,9 @@ func interactionApplicationCommand(ctx context.Context, data ApplicationCommand)
 		}
 	}
 
-	return InteractionResponse{
+	return model.InteractionResponse{
 		Type: 4,
-		Data: InteractionResponseData{
+		Data: model.InteractionResponseData{
 			Content: "Unregistered command",
 			TTS:     false,
 		},
