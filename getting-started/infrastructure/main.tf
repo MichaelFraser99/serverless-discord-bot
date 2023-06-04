@@ -107,3 +107,10 @@ resource "aws_iam_role_policy_attachment" "lambda_logs" {
   role       = aws_iam_role.bot_lambda_role.name
   policy_arn = aws_iam_policy.lambda_logging.arn
 }
+
+resource "discord-application_command" "poke" {
+  application_id = var.application_id
+  name = "poke"
+  description = "a poke to the application"
+  type = 1
+}
