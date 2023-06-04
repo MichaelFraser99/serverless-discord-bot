@@ -13,3 +13,8 @@ variable "public_key" {
   type = string
   description = "The discord bots public API key"
 }
+
+variable "application_id" {
+  type = string
+  description = "The discord bots application id"
+}
