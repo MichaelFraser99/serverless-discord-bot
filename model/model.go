@@ -132,13 +132,19 @@ func (i *Interaction) UnmarshalJSON(data []byte) error { //todo: map rest of key
 }
 
 type ApplicationCommand struct {
-	ID       string `json:"id"`
-	Name     string `json:"name"`
-	Type     int    `json:"type"`
-	Resolved any    `json:"resolved,omitempty"`
-	Options  any    `json:"options,omitempty"`
-	GuildID  string `json:"guild_id,omitempty"`
-	TargetID string `json:"target_id,omitempty"`
+	ID       string                     `json:"id"`
+	Name     string                     `json:"name"`
+	Type     int                        `json:"type"`
+	Resolved any                        `json:"resolved,omitempty"`
+	Options  []ApplicationCommandOption `json:"options,omitempty"`
+	GuildID  string                     `json:"guild_id,omitempty"`
+	TargetID string                     `json:"target_id,omitempty"`
+}
+
+type ApplicationCommandOption struct {
+	Name  string `json:"name"`
+	Type  int    `json:"type"`
+	Value any    `json:"value,omitempty"`
 }
 
 func (m ApplicationCommand) MarshalZerologObject(e *zerolog.Event) {
