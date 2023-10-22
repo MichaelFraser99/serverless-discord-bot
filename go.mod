@@ -5,13 +5,13 @@ go 1.21
 toolchain go1.21.0
 
 require (
+	github.com/MichaelFraser99/discord-application-sdk v1.2.2
 	github.com/aws/aws-lambda-go v1.41.0
 	github.com/rs/zerolog v1.29.1
 	github.com/stretchr/testify v1.8.3
 )
 
 require (
-	github.com/MichaelFraser99/discord-application-sdk v1.2.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.18 // indirect
