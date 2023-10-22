@@ -3,7 +3,7 @@ package model
 import (
 	"context"
 	"encoding/json"
-	"github.com/rs/zerolog"
+	sdk "github.com/MichaelFraser99/discord-application-sdk/discord/model"
 )
 
 type MentionType int
@@ -20,7 +20,7 @@ func (m MentionType) String() string {
 
 type BotConfig struct {
 	PublicKey                  string
-	ApplicationCommandHandlers map[string]func(ctx context.Context, applicationCommand ApplicationCommand) (*InteractionResponse, error)
+	ApplicationCommandHandlers map[string]func(ctx context.Context, applicationCommand sdk.ApplicationCommand) (*InteractionResponse, error)
 }
 
 type InteractionResponse struct {
@@ -94,7 +94,7 @@ func (i *Interaction) UnmarshalJSON(data []byte) error { //todo: map rest of key
 		i.Type = int(v["type"].(float64))
 	}
 	if v["data"] != nil {
-		applicationCommand := &ApplicationCommand{}
+		applicationCommand := &sdk.ApplicationCommand{}
 		bytes, err := json.Marshal(v["data"].(map[string]interface{}))
 		if err != nil {
 			return err
@@ -129,26 +129,6 @@ func (i *Interaction) UnmarshalJSON(data []byte) error { //todo: map rest of key
 	}
 
 	return nil
-}
-
-type ApplicationCommand struct {
-	ID       string `json:"id"`
-	Name     string `json:"name"`
-	Type     int    `json:"type"`
-	Resolved any    `json:"resolved,omitempty"`
-	Options  any    `json:"options,omitempty"`
-	GuildID  string `json:"guild_id,omitempty"`
-	TargetID string `json:"target_id,omitempty"`
-}
-
-func (m ApplicationCommand) MarshalZerologObject(e *zerolog.Event) {
-	e.Str("id", m.ID)
-	e.Str("name", m.Name)
-	e.Int("type", m.Type)
-	e.Interface("resolved", m.Resolved)
-	e.Interface("options", m.Options)
-	e.Str("guild_id", m.GuildID)
-	e.Str("target_id", m.TargetID)
 }
 
 type User struct {

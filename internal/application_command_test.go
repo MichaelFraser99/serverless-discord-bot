@@ -2,6 +2,7 @@ package internal
 
 import (
 	"context"
+	sdk "github.com/MichaelFraser99/discord-application-sdk/discord/model"
 	"github.com/MichaelFraser99/serverless-discord-bot/model"
 	"github.com/stretchr/testify/assert"
 	"testing"
@@ -12,12 +13,12 @@ import (
 func TestInteractionApplicationCommand(t *testing.T) {
 	tests := []struct {
 		name     string
-		input    model.ApplicationCommand
+		input    sdk.ApplicationCommand
 		validate func(t *testing.T, response *model.InteractionResponse, err error)
 	}{
 		{
 			name: "we can get an invalid command response when no command is registered",
-			input: model.ApplicationCommand{
+			input: sdk.ApplicationCommand{
 				ID:   "1234567890",
 				Name: "poke",
 				Type: 2,

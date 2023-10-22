@@ -1,3 +1,5 @@
+github.com/MichaelFraser99/discord-application-sdk v1.2.2 h1:K9ToMppWSMc1rOR6leHlsrO0RWOdzitkL03Za/OKd1g=
+github.com/MichaelFraser99/discord-application-sdk v1.2.2/go.mod h1:kXUtDVaZbaCBvSu3X3tnN/vCDl7huOYuGSU1Do+ehHo=
 github.com/aws/aws-lambda-go v1.41.0 h1:l/5fyVb6Ud9uYd411xdHZzSf2n86TakxzpvIoz7l+3Y=
 github.com/aws/aws-lambda-go v1.41.0/go.mod h1:jwFe2KmMsHmffA1X2R09hH6lFzJQxzI8qK17ewzbQMM=
 github.com/coreos/go-systemd/v22 v22.5.0/go.mod h1:Y58oyj3AT4RCenI/lSvhwexgC+NSVTIJ3seZv2GcEnc=

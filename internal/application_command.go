@@ -2,11 +2,12 @@ package internal
 
 import (
 	"context"
+	sdk "github.com/MichaelFraser99/discord-application-sdk/discord/model"
 	"github.com/MichaelFraser99/serverless-discord-bot/model"
 	"github.com/rs/zerolog/log"
 )
 
-func interactionApplicationCommand(ctx context.Context, data model.ApplicationCommand) (*model.InteractionResponse, error) {
+func interactionApplicationCommand(ctx context.Context, data sdk.ApplicationCommand) (*model.InteractionResponse, error) {
 	log.Ctx(ctx).Info().Interface("message", data).Msg("Processing application command")
 
 	for command, commandHandler := range config.ApplicationCommandHandlers {

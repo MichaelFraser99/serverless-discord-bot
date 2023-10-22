@@ -1,6 +1,8 @@
 module github.com/MichaelFraser99/serverless-discord-bot
 
-go 1.20
+go 1.21
+
+toolchain go1.21.0
 
 require (
 	github.com/aws/aws-lambda-go v1.41.0
@@ -9,6 +11,7 @@ require (
 )
 
 require (
+	github.com/MichaelFraser99/discord-application-sdk v1.2.2 // indirect
 	github.com/davecgh/go-spew v1.1.1 // indirect
 	github.com/mattn/go-colorable v0.1.13 // indirect
 	github.com/mattn/go-isatty v0.0.18 // indirect

@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"context"
 	"encoding/json"
+	sdk "github.com/MichaelFraser99/discord-application-sdk/discord/model"
 	"github.com/MichaelFraser99/serverless-discord-bot/model"
 	"github.com/MichaelFraser99/serverless-discord-bot/responses"
 	"github.com/aws/aws-lambda-go/events"
@@ -53,7 +54,7 @@ func NewHandler(passedConfig model.BotConfig) func(ctx context.Context, event ev
 		case 2:
 			log.Ctx(ctx).Info().Msg("Application command interaction received")
 
-			applicationCommand := model.ApplicationCommand{}
+			applicationCommand := sdk.ApplicationCommand{}
 			if json.Unmarshal([]byte(interaction.Data), &applicationCommand) != nil {
 				return responses.InternalServerError(ctx, err, "Failed to parse application command interaction to model")
 			}

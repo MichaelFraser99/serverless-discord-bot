@@ -7,6 +7,7 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"fmt"
+	sdk "github.com/MichaelFraser99/discord-application-sdk/discord/model"
 	"github.com/MichaelFraser99/serverless-discord-bot/model"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/stretchr/testify/assert"
@@ -70,8 +71,8 @@ func TestHandler(t *testing.T) {
 
 		testConfig := model.BotConfig{
 			PublicKey: string(*hexPublicKey),
-			ApplicationCommandHandlers: map[string]func(ctx context.Context, applicationCommand model.ApplicationCommand) (*model.InteractionResponse, error){
-				"poke": func(ctx context.Context, applicationCommand model.ApplicationCommand) (*model.InteractionResponse, error) {
+			ApplicationCommandHandlers: map[string]func(ctx context.Context, applicationCommand sdk.ApplicationCommand) (*model.InteractionResponse, error){
+				"poke": func(ctx context.Context, applicationCommand sdk.ApplicationCommand) (*model.InteractionResponse, error) {
 					return &model.InteractionResponse{
 						Type: 4,
 						Data: model.InteractionResponseData{
