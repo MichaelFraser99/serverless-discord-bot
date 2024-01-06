@@ -1,5 +1,5 @@
 resource "aws_api_gateway_rest_api" "bot_api" {
-  body = templatefile("../api/swagger.yaml", {
+  body = templatefile("${path.module}/api/swagger.yaml", {
     botLambdaInvocationArn = aws_lambda_function.bot_lambda.invoke_arn
     name = "${var.name}-api"
   })
@@ -35,13 +35,14 @@ resource "aws_lambda_function" "bot_lambda" {
   handler = "main"
   runtime = "provided.al2"
   memory_size = 128
-  filename = "../service/main.zip"
-  source_code_hash = filebase64sha256("../service/main.zip")
+  filename = "${path.module}/service/main.zip"
+  source_code_hash = filebase64sha256("${path.module}/service/main.zip")
   architectures = ["arm64"]
 
   environment {
     variables = {
       PUBLIC_KEY = var.public_key
+      GITHUB_TOKEN = var.github_token
     }
   }
 
@@ -108,9 +109,79 @@ resource "aws_iam_role_policy_attachment" "lambda_logs" {
   policy_arn = aws_iam_policy.lambda_logging.arn
 }
 
-resource "discord-application_command" "poke" {
+resource "discord-application_command" "create_server" {
   application_id = var.application_id
-  name = "poke"
-  description = "a poke to the application"
+  name = "create"
+  description = "Create a new server"
   type = 1
+  options = [
+    {
+      name = "map"
+      description = "select the Map"
+      type = 3
+      required = false
+    },
+    {
+      name = "modsenabled"
+      description = "Select if mods are enabled"
+      type = 5
+      required = false
+    },
+    {
+      name = "maxplayers"
+      description = "Select the max players"
+      type = 4
+      required = false
+    },
+    {
+      name = "maxcars"
+      description = "Select the max cars per player"
+      type = 4
+      required = false
+    },
+    {
+      name = "private"
+      description = "Select if the server is private"
+      type = 5
+      required = false
+    }
+  ]
+}
+
+resource "discord-application_command" "destroy_server" {
+  application_id = var.application_id
+  name = "destroy"
+  description = "Destroy the server"
+  type = 1
+}
+
+resource "terracurl_request" "discord_application_interaction_url" {
+  name = "discord_application_interaction_url"
+  url = "https://discord.com/api/v10/applications/${var.application_id}"
+  method = "PATCH"
+  request_body = <<EOF
+{
+  "interactions_endpoint_url": "${aws_api_gateway_stage.bot_api_stage.invoke_url}/interaction"
+}
+  EOF
+  headers = {
+    Authorization = "Bot ${var.application_secret}"
+    Content-Type = "application/json"
+    Accept = "application/json"
+  }
+  response_codes = [ 200, 204 ]
+
+  destroy_url = "https://discord.com/api/v10/applications/${var.application_id}"
+  destroy_method = "PATCH"
+  destroy_request_body = <<EOF
+{
+  "interactions_endpoint_url": ""
+}
+  EOF
+  destroy_headers = {
+    Authorization = "Bot ${var.application_secret}"
+    Content-Type = "application/json"
+    Accept = "application/json"
+  }
+  destroy_response_codes = [ 200, 204 ]
 }

@@ -1,5 +1,5 @@
 init:
-	terraform init
+	terraform init -upgrade
 
 plan:
 	terraform plan --var-file=vars.tfvars -out tfplan

@@ -18,3 +18,15 @@ variable "application_id" {
   type = string
   description = "The discord bots application id"
 }
+
+variable "application_secret" {
+  type = string
+  description = "The discord applications bot token"
+  sensitive = true
+}
+
+variable "github_token" {
+  type = string
+  description = "The github token used to initiate the Terraform gh-actions"
+  sensitive = true
+}
